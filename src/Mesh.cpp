@@ -70,8 +70,10 @@ void Mesh::UpdateVertices(const std::vector<glm::vec3>& positions, const std::ve
 
 void Mesh::Draw(const glm::mat4& viewProjMtx, GLuint shader) {
     // Culling
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+    if (culling) {
+	    glEnable(GL_CULL_FACE);
+	    glCullFace(GL_FRONT);
+    }
 
     // actiavte the shader program
     glUseProgram(shader);
@@ -90,7 +92,9 @@ void Mesh::Draw(const glm::mat4& viewProjMtx, GLuint shader) {
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 
     // Disable culling
-	glDisable(GL_CULL_FACE);
+    if (culling) {
+	    glDisable(GL_CULL_FACE);
+    }
 
     // Unbind the VAO and shader program
     glBindVertexArray(0);

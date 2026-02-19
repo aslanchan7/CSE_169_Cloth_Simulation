@@ -12,6 +12,8 @@ public:
 	void UpdateVertices(const std::vector<glm::vec3>& positions,
 		const std::vector<glm::vec3>& normals);
 
+	bool culling = false;
+
 private:
 	GLuint VAO;
 	GLuint VBO_positions, VBO_normals, EBO;
@@ -22,4 +24,5 @@ private:
 	glm::vec3 color;
 	glm::vec3 lightColor1;
 	glm::vec3 lightColor2;
+
 };

@@ -16,6 +16,8 @@ public:
 	void Draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void Update(float deltaTime);
 
+	void MoveFixedParticles(float d);
+
 	// public variables for ImGui
 	float windSpeed;
 

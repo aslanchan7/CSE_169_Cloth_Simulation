@@ -43,7 +43,16 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects() {
     // Create cloth
-	cloth = new Cloth(100.0f, 20.0f, 1.225f, 1.28f, 0.05f, 0.75f, glm::vec3(0.0f, 0.0f, 1.0f), 3.0f);
+	cloth = new Cloth(
+		500.0f,                         // springConstant
+		20.0f,                          // dampingConstant
+		1.225f,     		            // fluidDensity of air
+		1.28f,                          // dragCoefficient
+		0.05f,                          // restitutionCoefficient
+		0.75f,  					    // frictionCoefficient
+		glm::vec3(0.0f, 0.0f, 1.0f),    // windDir
+		3.0f    					    // windSpeed
+    );
 
     // Create plane
 	planeVertices.resize(4);
@@ -193,13 +202,28 @@ void Window::resetCamera() {
 
 // callbacks - for Interaction
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    /*
-     * TODO: Modify below to add your key callbacks.
-     */
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+		switch (key) {
+		case GLFW_KEY_A:
+			cloth->MoveFixedParticles(-0.01f);
+			break;
+		case GLFW_KEY_D:
+			cloth->MoveFixedParticles(0.01f);
+			break;
+		default:
+			break;
+		}
+	}
 
     // Check for a key press.
     if (action == GLFW_PRESS) {
-        switch (key) {
+        switch (key) {  
+            case GLFW_KEY_A:
+                cloth->MoveFixedParticles(-0.01f);
+                break;
+            case GLFW_KEY_D:
+                cloth->MoveFixedParticles(0.01f);
+                break;
             case GLFW_KEY_ESCAPE:
                 // Close the window. This causes the program to also terminate.
                 glfwSetWindowShouldClose(window, GL_TRUE);

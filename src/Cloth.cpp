@@ -19,7 +19,7 @@ Cloth::Cloth(float springConstant, float dampingConstant, float fluidDensity, fl
 			//p->position = glm::vec3(x * spacing, -y * (spacing/2.0f), 0);
 			
 			if (y == 0) {
-				p->fixed = true; // Fix the top row of particles
+				//p->fixed = true; // Fix the top row of particles
 				p->position.z = 0.0f;
 			}
 
@@ -171,13 +171,10 @@ void Cloth::Update(float deltaTime) {
 			p->ApplyImpulse(impulseVec);
 			
 			// Set position to be on the plane
-			p->position.y = -2.0f; // +0.1f to avoid clipping issues
+			p->position.y = -2.0f;
 
-			// Correct velocity to prevent sticking
-			if (p->velocity.y < 0.0f) {
-				p->velocity.y = 0.0f;
-			}
-
+			// Enable culling to avoid z-fighting
+			mesh->culling = true;
 
 			// Apply friction
 			glm::vec3 frictionVec = -frictionCoefficient * p->velocity * glm::vec3(1.0f, 0.0f, 1.0f);
@@ -198,4 +195,12 @@ void Cloth::Update(float deltaTime) {
 	}
 
 	mesh->UpdateVertices(positions, normals);
+}
+
+void Cloth::MoveFixedParticles(float d) {
+	for (Particle* p : particles) {
+		if (p->fixed) {
+			p->position.x += d;
+		}
+	}
 }
