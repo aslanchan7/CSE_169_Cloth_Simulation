@@ -1,4 +1,7 @@
 #include "Window.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 // Window Properties
 int Window::width;
@@ -6,7 +9,8 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-Cube* Window::cube;
+//Cube* Window::cube;
+Cloth* Window::cloth;
 
 // Camera Properties
 Camera* Cam;
@@ -34,15 +38,20 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects() {
     // Create a cube
-    cube = new Cube();
+    //cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+
+    // Create cloth
+	cloth = new Cloth(100.0f, 20.0f, 1.225f, 1.28f, glm::vec3(0.0f, 0.0f, 1.0f), 3.0f);
 
     return true;
 }
 
 void Window::cleanUp() {
     // Deallcoate the objects.
-    delete cube;
+    //delete cube;
+
+    delete cloth;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -106,7 +115,8 @@ void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
 
-    cube->update();
+    //cube->update();
+	cloth->Update(0.00016f); // TODO: Change deltaTime as needed
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -114,12 +124,39 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+    //cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+    cloth->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+
+	renderImGui(window);
 
     // Gets events, including input such as keyboard and mouse or window resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
+}
+
+void Window::renderImGui(GLFWwindow* window) {
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    {
+        ImGui::Begin("Wind Speed");
+
+		ImGui::SetWindowSize(ImVec2(250, 75));
+
+		ImGui::SliderFloat("Wind Speed", &cloth->windSpeed, -5.0f, 5.0f);
+
+        ImGui::End();
+    }
+
+    // Rendering
+    ImGui::Render();
+    int display_w, display_h;
+    glfwGetFramebufferSize(window, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 // helper to reset the camera
@@ -153,6 +190,10 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods) {
+	// Ignore mouse when ImGui wants to capture it
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) return;
+
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         LeftDown = (action == GLFW_PRESS);
     }

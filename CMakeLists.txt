@@ -11,6 +11,18 @@ set(
     src/Shader.cpp
     src/Tokenizer.cpp
     src/Window.cpp
+    src/Particle.cpp
+    src/Cloth.cpp
+    src/Mesh.cpp
+    src/Triangle.cpp
+    src/SpringDamper.cpp
+    src/imgui/imgui.cpp
+    src/imgui/imgui_demo.cpp
+    src/imgui/imgui_draw.cpp
+    src/imgui/imgui_tables.cpp
+    src/imgui/imgui_widgets.cpp
+    src/imgui/imgui_impl_glfw.cpp
+    src/imgui/imgui_impl_opengl3.cpp
 )
 
 # Add header files
@@ -22,6 +34,20 @@ set(
     include/Shader.h
     include/Tokenizer.h
     include/Window.h
+    include/Particle.h
+    include/Cloth.h
+    include/Mesh.h
+    include/Triangle.h
+    include/SpringDamper.h
+    include/imgui/imconfig.h
+    include/imgui/imgui.h
+    include/imgui/imgui_internal.h
+    include/imgui/imstb_rectpack.h
+    include/imgui/imstb_textedit.h
+    include/imgui/imstb_truetype.h
+    include/imgui/imgui_impl_glfw.h
+    include/imgui/imgui_impl_opengl3.h
+    include/imgui/imgui_impl_opengl3_loader.h
 )
 
 # Require GL

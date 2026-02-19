@@ -1,5 +1,8 @@
 #include "Window.h"
 #include "core.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 void error_callback(int error, const char* description) {
     // Print error.
@@ -55,6 +58,21 @@ int main(void) {
     // Setup OpenGL settings.
     setup_opengl_settings();
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends (ImGui)
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    const char* glsl_version = "#version 130";
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
     // Initialize the shader program; exit if initialization fails.
     if (!Window::initializeProgram()) exit(EXIT_FAILURE);
     // Initialize objects/pointers for rendering; exit if initialization fails.
@@ -68,6 +86,11 @@ int main(void) {
         // Idle callback. Updating objects, etc. can be done here.
         Window::idleCallback();
     }
+
+    // imgui Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     Window::cleanUp();
     // Destroy the window.

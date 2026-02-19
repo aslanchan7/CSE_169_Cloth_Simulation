@@ -4,6 +4,7 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
+#include "Cloth.h"
 
 class Window {
 public:
@@ -13,7 +14,8 @@ public:
     static const char* windowTitle;
 
     // Objects to render
-    static Cube* cube;
+    //static Cube* cube;
+	static Cloth* cloth;
 
     // Shader Program
     static GLuint shaderProgram;
@@ -33,6 +35,9 @@ public:
 
     // helper to reset the camera
     static void resetCamera();
+
+    // helper to render imgui
+    static void renderImGui(GLFWwindow*);
 
     // callbacks - for interaction
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
