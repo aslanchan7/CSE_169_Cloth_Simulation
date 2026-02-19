@@ -7,7 +7,10 @@
 
 class Cloth {
 public:
-	Cloth(float springConstant, float dampingConstant, float fluidDensity, float dragCoefficient, glm::vec3 windDir, float windSpeed);
+	Cloth(float springConstant, float dampingConstant, float fluidDensity, float dragCoefficient, 
+			float restitutionCoefficient, float frictionCoefficient, 
+			glm::vec3 windDir, float windSpeed
+	);
 	~Cloth();
 
 	void Draw(const glm::mat4& viewProjMtx, GLuint shader);
@@ -22,6 +25,9 @@ private:
 	std::vector<Triangle*> triangles;
 
 	glm::vec3 windDirection;
+
+	float restitutionCoefficient = 0.05f;
+	float frictionCoefficient = 0.6f;
 
 	// Data for mesh
 	Mesh* mesh;

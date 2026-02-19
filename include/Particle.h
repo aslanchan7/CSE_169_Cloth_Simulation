@@ -8,6 +8,7 @@ public:
 
 	void Update(float deltaTime);
 	void ApplyForce(const glm::vec3& force);
+	void ApplyImpulse(const glm::vec3& impulse);
 
 	glm::vec3 position;
 	glm::vec3 velocity;

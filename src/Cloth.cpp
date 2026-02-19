@@ -1,6 +1,9 @@
 #include "Cloth.h"
+#include "Window.h"
 
-Cloth::Cloth(float springConstant, float dampingConstant, float fluidDensity, float dragCoefficient, glm::vec3 windDir, float windSpeed) {
+Cloth::Cloth(float springConstant, float dampingConstant, float fluidDensity, float dragCoefficient, 
+				float restitutionCoefficient, float frictionCoefficient,
+				glm::vec3 windDir, float windSpeed) {
 	// Create particles
 	int numParticlesX = 10;
 	int numParticlesY = 10;
@@ -123,6 +126,10 @@ Cloth::Cloth(float springConstant, float dampingConstant, float fluidDensity, fl
 	// Initialize wind
 	this->windDirection = glm::normalize(windDir);
 	this->windSpeed = windSpeed;
+
+	// Initialize restitution and friction coefficients
+	this->restitutionCoefficient = restitutionCoefficient;
+	this->frictionCoefficient = frictionCoefficient;
 }
 
 Cloth::~Cloth() {
@@ -139,7 +146,6 @@ Cloth::~Cloth() {
 }
 
 void Cloth::Draw(const glm::mat4& viewProjMtx, GLuint shader) {
-	// TODO: Draw the cloth
 	mesh->Draw(viewProjMtx, shader);
 }
 
@@ -155,6 +161,28 @@ void Cloth::Update(float deltaTime) {
 
 	for (Triangle* t : triangles) {
 		t->Update(deltaTime, windSpeed * windDirection);
+	}
+
+	// Check for collisions with the plane at y = -2.0f
+	for (Particle* p : particles) {
+		if (p->position.y <= -2.0f) {
+			// Calculate impulse and apply it to the particle
+			glm::vec3 impulseVec = -(1.0f + restitutionCoefficient) * p->mass * p->velocity.y * glm::vec3(0.0f, 1.0f, 0.0f);
+			p->ApplyImpulse(impulseVec);
+			
+			// Set position to be on the plane
+			p->position.y = -2.0f; // +0.1f to avoid clipping issues
+
+			// Correct velocity to prevent sticking
+			if (p->velocity.y < 0.0f) {
+				p->velocity.y = 0.0f;
+			}
+
+
+			// Apply friction
+			glm::vec3 frictionVec = -frictionCoefficient * p->velocity * glm::vec3(1.0f, 0.0f, 1.0f);
+			p->ApplyForce(frictionVec);
+		}
 	}
 
 	// Update mesh vertices

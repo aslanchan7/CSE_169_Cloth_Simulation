@@ -14,8 +14,13 @@ public:
     static const char* windowTitle;
 
     // Objects to render
-    //static Cube* cube;
 	static Cloth* cloth;
+
+	// Plane Mesh
+    static Mesh* planeMesh;
+	static std::vector<glm::vec3> planeVertices;
+	static std::vector<glm::vec3> planeNormals;
+	static std::vector<glm::ivec3> planeIndices;
 
     // Shader Program
     static GLuint shaderProgram;

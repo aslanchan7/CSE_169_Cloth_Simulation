@@ -15,6 +15,11 @@ void Particle::ApplyForce(const glm::vec3& force) {
 	this->force += force;
 }
 
+void Particle::ApplyImpulse(const glm::vec3& impulse) {
+	if (fixed) return;
+	velocity += impulse / mass;
+}
+
 void Particle::Update(float deltaTime) {
 	if (fixed) return;
 

@@ -9,8 +9,13 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-//Cube* Window::cube;
 Cloth* Window::cloth;
+
+// Plane Mesh
+Mesh* Window::planeMesh;
+std::vector<glm::vec3> Window::planeVertices;
+std::vector<glm::vec3> Window::planeNormals;
+std::vector<glm::ivec3> Window::planeIndices;
 
 // Camera Properties
 Camera* Cam;
@@ -37,12 +42,30 @@ bool Window::initializeProgram() {
 }
 
 bool Window::initializeObjects() {
-    // Create a cube
-    //cube = new Cube();
-    // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-
     // Create cloth
-	cloth = new Cloth(100.0f, 20.0f, 1.225f, 1.28f, glm::vec3(0.0f, 0.0f, 1.0f), 3.0f);
+	cloth = new Cloth(100.0f, 20.0f, 1.225f, 1.28f, 0.05f, 0.75f, glm::vec3(0.0f, 0.0f, 1.0f), 3.0f);
+
+    // Create plane
+	planeVertices.resize(4);
+	planeNormals.resize(4);
+	planeIndices.resize(2);
+	planeVertices = {
+		glm::vec3(-5.0f, -2.1f, -5.0f),
+		glm::vec3(5.0f, -2.1f, -5.0f),
+		glm::vec3(5.0f, -2.1f, 5.0f),
+		glm::vec3(-5.0f, -2.1f, 5.0f)
+	};
+    planeNormals = {
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f)
+    };
+    planeIndices = {
+        glm::ivec3(0, 1, 2),
+        glm::ivec3(0, 2, 3)
+    };
+    planeMesh = new Mesh(planeVertices, planeNormals, planeIndices);
 
     return true;
 }
@@ -123,9 +146,11 @@ void Window::displayCallback(GLFWwindow* window) {
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Render the object.
-    //cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+    // Render cloth
     cloth->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+
+    // Render plane
+	planeMesh->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
 	renderImGui(window);
 
@@ -146,6 +171,7 @@ void Window::renderImGui(GLFWwindow* window) {
 
 		ImGui::SetWindowSize(ImVec2(250, 75));
 
+        // Wind Speed Slider
 		ImGui::SliderFloat("Wind Speed", &cloth->windSpeed, -5.0f, 5.0f);
 
         ImGui::End();
