@@ -4,7 +4,8 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
-#include "Cloth.h"
+#include "Mesh.h"
+#include "Particle.h"
 
 class Window {
 public:
@@ -14,7 +15,7 @@ public:
     static const char* windowTitle;
 
     // Objects to render
-	static Cloth* cloth;
+	static Particle* particle;
 
 	// Plane Mesh
     static Mesh* planeMesh;

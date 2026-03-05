@@ -25,6 +25,10 @@ void Triangle::Update(float deltaTime, glm::vec3 windVelocity) {
 	glm::vec3 edge2 = vertices[2]->position - vertices[0]->position;
 	normal = glm::normalize(glm::cross(edge1, edge2));
 
+	if (glm::length(windVelocity) < 0.001f) {
+		return; // No significant wind, skip force calculation
+	}
+
 	// Compute the area of the triangle
 	area = 0.5f * glm::length(glm::cross(edge1, edge2));
 	float normalArea = area * glm::dot(normal, glm::normalize(windVelocity));

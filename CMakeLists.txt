@@ -12,10 +12,8 @@ set(
     src/Tokenizer.cpp
     src/Window.cpp
     src/Particle.cpp
-    src/Cloth.cpp
     src/Mesh.cpp
-    src/Triangle.cpp
-    src/SpringDamper.cpp
+    src/Sphere.cpp
     src/imgui/imgui.cpp
     src/imgui/imgui_demo.cpp
     src/imgui/imgui_draw.cpp
@@ -35,10 +33,8 @@ set(
     include/Tokenizer.h
     include/Window.h
     include/Particle.h
-    include/Cloth.h
     include/Mesh.h
-    include/Triangle.h
-    include/SpringDamper.h
+    include/Sphere.h
     include/imgui/imconfig.h
     include/imgui/imgui.h
     include/imgui/imgui_internal.h

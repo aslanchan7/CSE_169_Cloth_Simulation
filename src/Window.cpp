@@ -9,7 +9,7 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-Cloth* Window::cloth;
+Particle* Window::particle;
 
 // Plane Mesh
 Mesh* Window::planeMesh;
@@ -42,17 +42,8 @@ bool Window::initializeProgram() {
 }
 
 bool Window::initializeObjects() {
-    // Create cloth
-	cloth = new Cloth(
-		500.0f,                         // springConstant
-		20.0f,                          // dampingConstant
-		1.225f,     		            // fluidDensity of air
-		1.28f,                          // dragCoefficient
-		0.05f,                          // restitutionCoefficient
-		0.75f,  					    // frictionCoefficient
-		glm::vec3(0.0f, 0.0f, 1.0f),    // windDir
-		3.0f    					    // windSpeed
-    );
+    // TODO: Create particles
+    particle = new Particle(1.0f, glm::vec3(0), glm::vec3(0, 5, 0), false);
 
     // Create plane
 	planeVertices.resize(4);
@@ -81,9 +72,8 @@ bool Window::initializeObjects() {
 
 void Window::cleanUp() {
     // Deallcoate the objects.
-    //delete cube;
-
-    delete cloth;
+    // TODO: Delete particles
+	delete particle;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -147,16 +137,18 @@ void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
 
-    //cube->update();
-	cloth->Update(0.00016f); // TODO: Change deltaTime as needed
+    // TODO: Call Update
+    particle->Update(0.0005f);
 }
 
 void Window::displayCallback(GLFWwindow* window) {
+	glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Render cloth
-    cloth->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+    // TODO: Render particles
+	particle->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
     // Render plane
 	planeMesh->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
@@ -180,9 +172,6 @@ void Window::renderImGui(GLFWwindow* window) {
 
 		ImGui::SetWindowSize(ImVec2(250, 75));
 
-        // Wind Speed Slider
-		ImGui::SliderFloat("Wind Speed", &cloth->windSpeed, -5.0f, 5.0f);
-
         ImGui::End();
     }
 
@@ -202,28 +191,9 @@ void Window::resetCamera() {
 
 // callbacks - for Interaction
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-		switch (key) {
-		case GLFW_KEY_A:
-			cloth->MoveFixedParticles(-0.01f);
-			break;
-		case GLFW_KEY_D:
-			cloth->MoveFixedParticles(0.01f);
-			break;
-		default:
-			break;
-		}
-	}
-
     // Check for a key press.
     if (action == GLFW_PRESS) {
         switch (key) {  
-            case GLFW_KEY_A:
-                cloth->MoveFixedParticles(-0.01f);
-                break;
-            case GLFW_KEY_D:
-                cloth->MoveFixedParticles(0.01f);
-                break;
             case GLFW_KEY_ESCAPE:
                 // Close the window. This causes the program to also terminate.
                 glfwSetWindowShouldClose(window, GL_TRUE);

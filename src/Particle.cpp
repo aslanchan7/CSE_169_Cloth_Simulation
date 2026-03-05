@@ -1,14 +1,17 @@
 #include "Particle.h"
+#include <iostream>
 
-Particle::Particle() {
-	position = glm::vec3(0.0f);
-	velocity = glm::vec3(0.0f);
-	force = glm::vec3(0.0f);
-	mass = 0.0f;
-	fixed = false;
+Particle::Particle(float mass, glm::vec3 initPos, glm::vec3 initVelocity, bool fixed) {
+	this->mass = mass;
+	position = initPos;
+	velocity = initVelocity;
+	force = glm::vec3(0);
+	this->fixed = fixed;
+	sphere = new Sphere(position);
 }
 
 Particle::~Particle() {
+	delete sphere;
 }
 
 void Particle::ApplyForce(const glm::vec3& force) {
@@ -23,6 +26,9 @@ void Particle::ApplyImpulse(const glm::vec3& impulse) {
 void Particle::Update(float deltaTime) {
 	if (fixed) return;
 
+	// Every update, apply gravity
+	ApplyForce(glm::vec3(0.0f, -9.81f * mass, 0.0f));
+
 	// Newton's Second Law
 	glm::vec3 acceleration = force / mass;
 	
@@ -34,4 +40,12 @@ void Particle::Update(float deltaTime) {
 	
 	// Zero out the force for next frame
 	force = glm::vec3(0.0f); 
+
+	// Update render object (mesh)
+	sphere->Update(position);
+}
+
+void Particle::Draw(const glm::mat4& viewProjMtx, GLuint shader) {
+	sphere->Update(position);
+	sphere->Draw(viewProjMtx, shader);
 }
