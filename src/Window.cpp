@@ -17,6 +17,16 @@ std::vector<glm::vec3> Window::planeVertices;
 std::vector<glm::vec3> Window::planeNormals;
 std::vector<glm::ivec3> Window::planeIndices;
 
+// Global Variables
+float Window::gravityScale = 1.0f;
+
+float Window::windSpeed = 3.0f;
+glm::vec3 Window::windDir = glm::normalize(glm::vec3(0, 0, 1));
+float Window::airDensity = 1.225f;
+
+float Window::particleRadius = 0.1f;
+float Window::dragCoefficient = 0.47f;
+
 // Camera Properties
 Camera* Cam;
 
@@ -43,7 +53,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects() {
     // TODO: Create particles
-    particle = new Particle(1.0f, glm::vec3(0), glm::vec3(0, 5, 0), false);
+    particle = new Particle(0.1f, glm::vec3(0), glm::vec3(0, 5, 0), false);
 
     // Create plane
 	planeVertices.resize(4);
@@ -168,9 +178,24 @@ void Window::renderImGui(GLFWwindow* window) {
     ImGui::NewFrame();
 
     {
-        ImGui::Begin("Wind Speed");
+        ImGui::Begin("Environmental Settings");
 
-		ImGui::SetWindowSize(ImVec2(250, 75));
+		//ImGui::SetWindowSize(ImVec2(350, 150));
+		ImGui::SetWindowSize(ImVec2(350, 150), ImGuiCond_FirstUseEver);
+
+        if (ImGui::CollapsingHeader("Gravity")) {
+			ImGui::SliderFloat("Gravity Scale", &Window::gravityScale, -5.0f, 5.0f);
+        }
+
+        if (ImGui::CollapsingHeader("Air & Wind")) {
+		    ImGui::SliderFloat("Wind Speed", &Window::windSpeed, -10.0f, 10.0f);
+			ImGui::SliderFloat("Air Density", &Window::airDensity, 0.0f, 5.0f);
+        }
+
+        if (ImGui::CollapsingHeader("Particle Settings")) {
+			ImGui::SliderFloat("Particle Radius", &Window::particleRadius, 0.01f, 1.0f);
+			ImGui::SliderFloat("Drag Coefficient", &Window::dragCoefficient, 0.01f, 1.5f);
+        }
 
         ImGui::End();
     }

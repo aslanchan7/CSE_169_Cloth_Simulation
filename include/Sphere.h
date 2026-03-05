@@ -4,7 +4,7 @@
 
 class Sphere {
 public:
-	Sphere(glm::vec3 offset);
+	Sphere(glm::vec3 offset, float radius);
 	~Sphere();
 	
 	void Draw(const glm::mat4& viewProjMtx, GLuint shader);
@@ -20,7 +20,7 @@ private:
 	glm::vec3 lightColor1;
 
 	GLsizei indexCount;
-	float scale = 0.1f;
+	float radius = 0.1f;
 
 	// Sphere Information
 	std::vector<glm::vec3> positions;

@@ -1,4 +1,5 @@
 #include "Particle.h"
+#include "Window.h"
 #include <iostream>
 
 Particle::Particle(float mass, glm::vec3 initPos, glm::vec3 initVelocity, bool fixed) {
@@ -7,7 +8,11 @@ Particle::Particle(float mass, glm::vec3 initPos, glm::vec3 initVelocity, bool f
 	velocity = initVelocity;
 	force = glm::vec3(0);
 	this->fixed = fixed;
-	sphere = new Sphere(position);
+
+	dragCoefficient = Window::dragCoefficient;
+	radius = Window::particleRadius;
+	
+	sphere = new Sphere(position, radius);
 }
 
 Particle::~Particle() {
@@ -26,8 +31,20 @@ void Particle::ApplyImpulse(const glm::vec3& impulse) {
 void Particle::Update(float deltaTime) {
 	if (fixed) return;
 
-	// Every update, apply gravity
-	ApplyForce(glm::vec3(0.0f, -9.81f * mass, 0.0f));
+	// GRAVITY
+	ApplyForce(glm::vec3(0.0f, -9.81f * Window::gravityScale * mass, 0.0f));
+
+	// AERODYNAMIC DRAG
+	if (abs(Window::windSpeed) > 0.001f) {
+		glm::vec3 relVelocity = (Window::windDir * Window::windSpeed) - this->velocity;
+		float relSpeed = glm::length(relVelocity);
+		float area = 3.14159 * pow(radius, 2);
+		glm::vec3 dragDir = -relVelocity / relSpeed;
+		glm::vec3 aeroDragForce = 0.5f * Window::airDensity * float(pow(relSpeed, 2)) *
+									dragCoefficient * area * dragDir;
+		
+		ApplyForce(aeroDragForce);
+	}
 
 	// Newton's Second Law
 	glm::vec3 acceleration = force / mass;

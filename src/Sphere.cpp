@@ -1,8 +1,9 @@
 #include "Sphere.h"
 
-Sphere::Sphere(glm::vec3 offset) {
+Sphere::Sphere(glm::vec3 offset, float radius) {
 	// Model matrix. Scale the unit sphere down to a particle-sized sphere.
-	model = glm::scale(glm::translate(glm::mat4(1.0f), offset), glm::vec3(scale));
+    this->radius = radius;
+	model = glm::scale(glm::translate(glm::mat4(1.0f), offset), glm::vec3(radius));
 
     // The color of the mesh
     color = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -157,5 +158,5 @@ void Sphere::Draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
 void Sphere::Update(glm::vec3 offset) {
 	// Update the model matrix to reflect the new position of the sphere.
-    model = glm::translate(glm::mat4(1.0f), offset) * glm::scale(glm::mat4(1.0f), glm::vec3(scale));
+    model = glm::translate(glm::mat4(1.0f), offset) * glm::scale(glm::mat4(1.0f), glm::vec3(radius));
 }

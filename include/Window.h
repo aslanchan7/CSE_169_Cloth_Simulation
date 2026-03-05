@@ -22,6 +22,16 @@ public:
 	static std::vector<glm::vec3> planeVertices;
 	static std::vector<glm::vec3> planeNormals;
 	static std::vector<glm::ivec3> planeIndices;
+ 
+    // Global Variables (Adjustable Environment Settings)
+    static float gravityScale;
+
+    static float windSpeed;
+    static glm::vec3 windDir;
+	static float airDensity;
+
+    static float particleRadius;
+	static float dragCoefficient;
 
     // Shader Program
     static GLuint shaderProgram;

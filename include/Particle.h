@@ -20,4 +20,8 @@ public:
 	bool fixed;
 
 	Sphere* sphere;
+
+	// Adjustable Settings
+	float radius;
+	float dragCoefficient;
 };
