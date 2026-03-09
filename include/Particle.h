@@ -24,4 +24,6 @@ public:
 	// Adjustable Settings
 	float radius;
 	float dragCoefficient;
+	float restitutionCoefficient;
+	float frictionCoefficient;
 };

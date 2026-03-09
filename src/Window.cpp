@@ -20,7 +20,7 @@ std::vector<glm::ivec3> Window::planeIndices;
 // Global Variables
 float Window::gravityScale = 1.0f;
 
-float Window::windSpeed = 3.0f;
+float Window::windSpeed = -3.0f;
 glm::vec3 Window::windDir = glm::normalize(glm::vec3(0, 0, 1));
 float Window::airDensity = 1.225f;
 
