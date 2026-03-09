@@ -26,6 +26,8 @@ float Window::airDensity = 1.225f;
 
 float Window::particleRadius = 0.1f;
 float Window::dragCoefficient = 0.47f;
+float Window::restitutionCoefficient = 0.3f;
+float Window::frictionCoefficient = 0.6f;
 
 // Camera Properties
 Camera* Cam;
@@ -194,7 +196,9 @@ void Window::renderImGui(GLFWwindow* window) {
 
         if (ImGui::CollapsingHeader("Particle Settings")) {
 			ImGui::SliderFloat("Particle Radius", &Window::particleRadius, 0.01f, 1.0f);
-			ImGui::SliderFloat("Drag Coefficient", &Window::dragCoefficient, 0.01f, 1.5f);
+            ImGui::SliderFloat("Drag Coefficient", &Window::dragCoefficient, 0.01f, 1.5f);
+            ImGui::SliderFloat("Restitution Coefficient", &Window::restitutionCoefficient, 0.0f, 1.0f);
+            ImGui::SliderFloat("Friction Coefficient", &Window::frictionCoefficient, 0.0f, 1.0f);
         }
 
         ImGui::End();

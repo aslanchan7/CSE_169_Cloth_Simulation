@@ -32,6 +32,8 @@ public:
 
     static float particleRadius;
 	static float dragCoefficient;
+	static float restitutionCoefficient;
+	static float frictionCoefficient;
 
     // Shader Program
     static GLuint shaderProgram;

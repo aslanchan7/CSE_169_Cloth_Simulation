@@ -11,8 +11,8 @@ Particle::Particle(float mass, glm::vec3 initPos, glm::vec3 initVelocity, bool f
 
 	dragCoefficient = Window::dragCoefficient;
 	radius = Window::particleRadius;
-	restitutionCoefficient = 0.3f;
-	frictionCoefficient = 0.6f;
+	restitutionCoefficient = Window::restitutionCoefficient;
+	frictionCoefficient = Window::frictionCoefficient;
 	
 	sphere = new Sphere(position, radius);
 }
