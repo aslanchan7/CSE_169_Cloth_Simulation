@@ -26,4 +26,5 @@ public:
 	float dragCoefficient;
 	float restitutionCoefficient;
 	float frictionCoefficient;
+	float lifespan;
 };

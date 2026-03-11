@@ -14,6 +14,7 @@ set(
     src/Particle.cpp
     src/Mesh.cpp
     src/Sphere.cpp
+    src/ParticleSource.cpp
     src/imgui/imgui.cpp
     src/imgui/imgui_demo.cpp
     src/imgui/imgui_draw.cpp
@@ -35,6 +36,7 @@ set(
     include/Particle.h
     include/Mesh.h
     include/Sphere.h
+    include/ParticleSource.h
     include/imgui/imconfig.h
     include/imgui/imgui.h
     include/imgui/imgui_internal.h

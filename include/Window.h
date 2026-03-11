@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "core.h"
 #include "Mesh.h"
-#include "Particle.h"
+#include "ParticleSource.h"
 
 class Window {
 public:
@@ -15,7 +15,7 @@ public:
     static const char* windowTitle;
 
     // Objects to render
-	static Particle* particle;
+	static ParticleSource* particleSource;
 
 	// Plane Mesh
     static Mesh* planeMesh;
@@ -24,6 +24,12 @@ public:
 	static std::vector<glm::ivec3> planeIndices;
  
     // Global Variables (Adjustable Environment Settings)
+    static float spawnRate;
+	static glm::vec3 spawnVelocity;
+	static glm::vec3 velocityVariance;
+    static glm::vec3 spawnPos;
+	static glm::vec3 spawnPosVariance;
+    
     static float gravityScale;
 
     static float windSpeed;
@@ -34,6 +40,7 @@ public:
 	static float dragCoefficient;
 	static float restitutionCoefficient;
 	static float frictionCoefficient;
+	static float particleLifespan;
 
     // Shader Program
     static GLuint shaderProgram;

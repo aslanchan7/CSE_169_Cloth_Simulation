@@ -14,6 +14,8 @@ Particle::Particle(float mass, glm::vec3 initPos, glm::vec3 initVelocity, bool f
 	restitutionCoefficient = Window::restitutionCoefficient;
 	frictionCoefficient = Window::frictionCoefficient;
 	
+	lifespan = Window::particleLifespan;
+
 	sphere = new Sphere(position, radius);
 }
 
@@ -31,6 +33,9 @@ void Particle::ApplyImpulse(const glm::vec3& impulse) {
 }
 
 void Particle::Update(float deltaTime) {
+	// Decrease lifespan
+	lifespan -= deltaTime;
+
 	if (fixed) return;
 
 	// GRAVITY
@@ -54,7 +59,6 @@ void Particle::Update(float deltaTime) {
 		glm::vec3 dragDir = relVelocity / relSpeed;
 		glm::vec3 aeroDragForce = 0.5f * Window::airDensity * float(pow(relSpeed, 2)) *
 									dragCoefficient * area * dragDir;
-		std::cout << "Drag Dir: " << dragDir.x << ", " << dragDir.y << ", " << dragDir.z << std::endl;
 		ApplyForce(aeroDragForce);
 	}
 

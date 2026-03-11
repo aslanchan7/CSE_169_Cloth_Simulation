@@ -9,7 +9,7 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-Particle* Window::particle;
+ParticleSource* Window::particleSource;
 
 // Plane Mesh
 Mesh* Window::planeMesh;
@@ -18,6 +18,12 @@ std::vector<glm::vec3> Window::planeNormals;
 std::vector<glm::ivec3> Window::planeIndices;
 
 // Global Variables
+float Window::spawnRate = 10.0f;
+glm::vec3 Window::spawnVelocity = glm::vec3(0, 5, 0);
+glm::vec3 Window::velocityVariance = glm::vec3(0.5f);
+glm::vec3 Window::spawnPos = glm::vec3(0, 0, 0);
+glm::vec3 Window::spawnPosVariance = glm::vec3(0.5f);
+
 float Window::gravityScale = 1.0f;
 
 float Window::windSpeed = -3.0f;
@@ -28,6 +34,7 @@ float Window::particleRadius = 0.1f;
 float Window::dragCoefficient = 0.47f;
 float Window::restitutionCoefficient = 0.3f;
 float Window::frictionCoefficient = 0.6f;
+float Window::particleLifespan = 1.5f;
 
 // Camera Properties
 Camera* Cam;
@@ -55,7 +62,8 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects() {
     // TODO: Create particles
-    particle = new Particle(0.1f, glm::vec3(0), glm::vec3(0, 5, 0), false);
+    //particle = new Particle(0.1f, glm::vec3(0), glm::vec3(0, 5, 0), false);
+	particleSource = new ParticleSource(spawnPos, spawnVelocity, spawnRate);
 
     // Create plane
 	planeVertices.resize(4);
@@ -85,7 +93,7 @@ bool Window::initializeObjects() {
 void Window::cleanUp() {
     // Deallcoate the objects.
     // TODO: Delete particles
-	delete particle;
+    delete particleSource;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -150,7 +158,7 @@ void Window::idleCallback() {
     Cam->Update();
 
     // TODO: Call Update
-    particle->Update(0.0005f);
+    particleSource->Update(0.0005f);
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -160,7 +168,7 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // TODO: Render particles
-	particle->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+	particleSource->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
     // Render plane
 	planeMesh->Draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
@@ -185,6 +193,31 @@ void Window::renderImGui(GLFWwindow* window) {
 		//ImGui::SetWindowSize(ImVec2(350, 150));
 		ImGui::SetWindowSize(ImVec2(350, 150), ImGuiCond_FirstUseEver);
 
+        if (ImGui::CollapsingHeader("Particle Source Settings")) {
+			ImGui::SliderFloat("Spawn Rate", &Window::spawnRate, 0.1f, 100.0f);
+			
+            if (ImGui::CollapsingHeader("Spawn Velocity")) {
+                ImGui::SliderFloat("Velocity X", &Window::spawnVelocity.x, -10.0f, 10.0f);
+                ImGui::SliderFloat("Velocity Y", &Window::spawnVelocity.y, -10.0f, 10.0f);
+                ImGui::SliderFloat("Velocity Z", &Window::spawnVelocity.z, -10.0f, 10.0f);
+
+                ImGui::SliderFloat("Velocity Variance X", &Window::velocityVariance.x, 0.0f, 0.5f);
+                ImGui::SliderFloat("Velocity Variance Y", &Window::velocityVariance.y, 0.0f, 0.5f);
+                ImGui::SliderFloat("Velocity Variance Z", &Window::velocityVariance.z, 0.0f, 0.5f);
+            }
+
+            if (ImGui::CollapsingHeader("Spawn Position")) {
+                ImGui::SliderFloat("Pos X", &Window::spawnPos.x, -10.0f, 10.0f);
+                ImGui::SliderFloat("Pos Y", &Window::spawnPos.y, -10.0f, 10.0f);
+                ImGui::SliderFloat("Pos Z", &Window::spawnPos.z, -10.0f, 10.0f);
+
+                ImGui::SliderFloat("Pos Variance X", &Window::spawnPosVariance.x, 0.0f, 0.5f);
+                ImGui::SliderFloat("Pos Variance Y", &Window::spawnPosVariance.y, 0.0f, 0.5f);
+                ImGui::SliderFloat("Pos Variance Z", &Window::spawnPosVariance.z, 0.0f, 0.5f);
+            }
+
+        }
+
         if (ImGui::CollapsingHeader("Gravity")) {
 			ImGui::SliderFloat("Gravity Scale", &Window::gravityScale, -5.0f, 5.0f);
         }
@@ -199,6 +232,7 @@ void Window::renderImGui(GLFWwindow* window) {
             ImGui::SliderFloat("Drag Coefficient", &Window::dragCoefficient, 0.01f, 1.5f);
             ImGui::SliderFloat("Restitution Coefficient", &Window::restitutionCoefficient, 0.0f, 1.0f);
             ImGui::SliderFloat("Friction Coefficient", &Window::frictionCoefficient, 0.0f, 1.0f);
+			ImGui::SliderFloat("Particle Lifespan", &Window::particleLifespan, 0.1f, 20.0f);
         }
 
         ImGui::End();
